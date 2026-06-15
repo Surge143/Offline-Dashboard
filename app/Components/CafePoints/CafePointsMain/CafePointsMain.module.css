@@ -1,0 +1,716 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #ffffff;
+  padding: clamp(32px, calc(32px + (32 * ((100vw - 375px) / 1545))), 64px)
+    clamp(24px, calc(24px + (336 * ((100vw - 375px) / 1545))), 360px)
+    clamp(32px, calc(32px + (91 * ((100vw - 375px) / 1545))), 123px)
+    clamp(24px, calc(24px + (336 * ((100vw - 375px) / 1545))), 360px);
+}
+.MainContainer {
+  display: flex;
+  justify-content: left;
+  width: 100%;
+  gap: 180px;
+  flex-direction: row;
+}
+.left {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+.leftTop {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  gap: 12px;
+}
+.leftTop h4 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+
+  text-transform: capitalize;
+}
+.leftTop input {
+  width: 100%;
+  border: 1px solid #818686;
+  padding: 19px 54px 19px 20px;
+  font-size: 15px;
+
+  color: #414343;
+  font-weight: 400;
+  background-color: transparent;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.leftTop input::placeholder {
+  color: rgba(110, 115, 106, 0.6);
+  font-size: 15px;
+
+}
+.leftBottom {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  gap: 32px;
+}
+.leftBottomTop {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  gap: 12px;
+}
+.leftBottomTopTexts {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  gap: 4px;
+}
+.leftBottomTopTexts h4 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+
+  text-transform: capitalize;
+}
+.leftBottomTopTexts p {
+  font-size: 15px;
+  color: #818686;
+  font-weight: 400;
+
+}
+.leftBottomTop input {
+  width: 100%;
+  border: 1px solid #818686;
+  padding: 19px 54px 19px 20px;
+  font-size: 15px;
+
+  color: #414343;
+  font-weight: 400;
+  background-color: transparent;
+  outline: none;
+  box-sizing: border-box;
+}
+.leftBottomTop input::placeholder {
+  color: rgba(110, 115, 106, 0.6);
+  font-size: 15px;
+
+}
+.continue {
+  background-color: #C4754E;
+  color: #ffffff;
+  font-size: 15px;
+
+  border: none;
+  padding: 13px 13px;
+  width: 100%;
+  cursor: pointer;
+}
+.continueMuted {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.leftMiddle {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.radioItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.radioItem input {
+  display: none;
+}
+
+.customRadio {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #C4754E;
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+}
+
+.radioItem input:checked + .customRadio::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: #C4754E;
+  border-radius: 50%;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.radioText {
+  font-size: 18px;
+  font-weight: 500;
+  color: #414343;
+  white-space: nowrap;
+  font-family: var(--lato);
+}
+
+.RightBottom {
+  display: flex;
+  justify-content: left;
+  gap: 12px;
+  flex-direction: column;
+}
+.RightBottom h6 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+
+  text-transform: capitalize;
+}
+.stampCard {
+  background: #F5F5F5;
+  border-radius: 8px;
+  padding: 27px 33px;
+  width: 100%;
+}
+
+.StampsDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.StampsDetails p {
+  font-size: 14px;
+  color: #8c8c8c;
+  font-weight: 400;
+
+}
+
+.Rewards {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #C4754E26;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 0.5px solid #C4754E26;
+}
+
+.Rewards span {
+  font-size: 12px;
+  color: #C4754E;
+  font-weight: 400;
+
+}
+
+.rewardCircle {
+  background: #C4754E;
+  color: white;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  display: flex;
+  font-size: 12px;
+
+  font-weight: 500;
+  justify-content: center;
+  align-items: center;
+}
+.right {
+  display: flex;
+  justify-content: left;
+  width: 100%;
+  flex-direction: column;
+}
+.StampGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 18px;
+  column-gap: 28px;
+}
+.stampWrapper {
+  position: relative;
+  width: 84px;
+  height: 84px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.unStamp img {
+  width: 47px;
+  height: 52px;
+  position: relative;
+  z-index: 2;
+}
+.texturestamp {
+  width: 77px;
+  height: 77px;
+}
+
+.texturestamp {
+  opacity: 0.6;
+  transition: opacity 160ms ease-in-out;
+}
+
+.fullStamp {
+  opacity: 1 !important;
+}
+
+.unStamp {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid #8186864D;
+  background: #fff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shadow0::before,
+.shadow1::before,
+.shadow2::before,
+.shadow3::before,
+.shadow4::before {
+  content: "";
+  position: absolute;
+  width: 77px;
+  height: 77px;
+  background: #8c8c8c59;
+  border-radius: 50%;
+  /* z-index: 1; */
+}
+
+.shadow0::before {
+  top: -4px;
+  right: -4px;
+}
+
+.shadow1::before {
+  top: -3px;
+  left: -5px;
+}
+
+.shadow2::before {
+  left: -4px;
+  top: -4px;
+}
+
+.shadow3::before {
+  right: -4px;
+  top: -3px;
+}
+
+.shadow4::before {
+  bottom: -4px;
+  left: 2px;
+}
+
+.secondRow.shadow0::before {
+  top: 4px;
+  right: 4px;
+}
+
+.secondRow.shadow1::before {
+  top: 3px;
+  left: 5px;
+}
+
+.secondRow.shadow2::before {
+  left: 4px;
+  top: 4px;
+}
+
+.secondRow.shadow3::before {
+  right: 4px;
+  top: 3px;
+}
+
+.secondRow.shadow4::before {
+  bottom: 4px;
+  left: -2px;
+}
+.redemption {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.redemption h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #414343;
+
+}
+
+.checkBoxCard {
+  border: 1px solid #818686;
+  padding: 12px 12px 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.mutedCard {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.checkBoxCard input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #C4754E;
+  cursor: pointer;
+}
+.checkBoxCard p {
+  font-size: 15px;
+  font-weight: 400;
+  color: #414343;
+
+}
+
+.checkBoxCard span {
+  font-size: 14px;
+
+  color: #818686;
+  font-weight: 400;
+}
+
+.righttwo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.breakdownCard {
+  background: #8186861a;
+  padding: 16px 21px 21px 16px;
+}
+
+.breakRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+
+  font-weight: 400;
+  color: #414343;
+  margin-bottom: 15px;
+}
+.righttwo h6 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+
+  text-transform: capitalize;
+}
+.breakRowTotal {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+
+  font-size: 15px;
+  color: #414343;
+}
+
+.red {
+  color: #e54842;
+
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.line {
+  height: 1px;
+  background: #818686;
+  margin: 8px 0px 15px 0px;
+}
+
+@media (min-width:376px) and (max-width:640px) {
+
+  .main {
+    padding: 0px 24px 30px 24px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left {
+    gap: 32px;
+  }
+
+  .leftMiddle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .radioText {
+    font-size: 16px;
+  }
+
+  .leftTop h4,
+  .leftBottomTopTexts h4,
+  .RightBottom h6,
+  .righttwo h6 {
+    font-size: 16px;
+  }
+
+  .leftBottomTopTexts p {
+    font-size: 14px;
+  }
+
+  .continue {
+    font-size: 14px;
+  }
+
+
+
+  .stampCard {
+    padding: 18px 13px 24px 13px;
+  }
+
+  .StampsDetails {
+    margin-bottom: 16px;
+  }
+
+  .StampsDetails p {
+    font-size: 14px;
+  }
+
+  .Rewards span {
+    font-size: 14px;
+  }
+
+  .rewardCircle {
+    font-size: 14px;
+    width: 23px;
+    height: 23px;
+  }
+
+  .StampGrid {
+    row-gap: 16px;
+    column-gap: 16px;
+  }
+
+  .stampWrapper {
+    width: 50px;
+    height: 50px;
+  }
+
+  .unStamp {
+    width: 50px;
+    height: 50px;
+  }
+
+  .unStamp img {
+    width: 28px;
+    height: 30px;
+  }
+
+  .texturestamp {
+    width: 46px;
+    height: 46px;
+  }
+
+  .shadow0::before,
+  .shadow1::before,
+  .shadow2::before,
+  .shadow3::before,
+  .shadow4::before {
+    width: 46px;
+    height: 46px;
+  }
+
+
+
+
+  .breakdownCard {
+    padding: 14px;
+  }
+
+  .breakRow,
+  .breakRowTotal {
+    font-size: 14px;
+  }
+
+}
+
+
+
+
+@media (max-width:375px) {
+
+  .main {
+    padding: 0px 24px 30px 24px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left {
+    gap: 32px;
+  }
+
+  .leftMiddle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .radioText {
+    font-size: 16px;
+  }
+
+  .leftTop h4,
+  .leftBottomTopTexts h4,
+  .RightBottom h6,
+  .righttwo h6 {
+    font-size: 16px;
+  }
+
+  .leftBottomTopTexts p {
+    font-size: 14px;
+  }
+
+
+
+
+  .stampCard {
+    padding: 18px 13px 24px 13px;
+  }
+
+  .StampsDetails {
+    margin-bottom: 16px;
+  }
+
+  .rewardCircle {
+    width: 23px;
+    height: 23px;
+    font-size: 14px;
+  }
+
+  .StampGrid {
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 16px;
+    column-gap: 16px;
+  }
+
+  .stampWrapper {
+    width: 50px;
+    height: 50px;
+  }
+
+  .unStamp {
+    width: 50px;
+    height: 50px;
+  }
+
+  .unStamp img {
+    width: 28px;
+    height: 30px;
+  }
+
+  .texturestamp {
+    width: 46px;
+    height: 46px;
+  }
+
+  .shadow0::before,
+  .shadow1::before,
+  .shadow2::before,
+  .shadow3::before,
+  .shadow4::before {
+    width: 46px;
+    height: 46px;
+  }
+
+
+
+
+  .breakRow,
+  .breakRowTotal {
+    font-size: 14px;
+  }
+
+}
+
+
+
+
+
+@media (min-width:641px) and (max-width:1200px) {
+
+  .main {
+    padding: 40px 50px 30px 50px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+}
+
+
+
+
+
+@media (min-width:1201px) and (max-width:1440px) {
+
+  .main {
+    padding: 40px 100px 30px 100px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+  }
+
+}
+
+
+
+
+
+@media (min-width:1441px) and (max-width:1740px) {
+
+  .main {
+    padding: 40px 100px 30px 100px;
+  }
+
+}
+.desktopContinue {
+  display: block;
+}
+
+.mobileContinue {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .desktopContinue {
+    display: none;
+  }
+
+  .mobileContinue {
+    display: block;
+    width: 100%;
+  }
+}

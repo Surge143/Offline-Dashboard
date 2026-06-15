@@ -1,0 +1,374 @@
+.Main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #ffffff;
+  padding: clamp(32px, calc(32px + (32 * ((100vw - 375px) / 1545))), 64px)
+    clamp(24px, calc(24px + (336 * ((100vw - 375px) / 1545))), 360px)
+    clamp(32px, calc(32px + (91 * ((100vw - 375px) / 1545))), 123px)
+    clamp(24px, calc(24px + (336 * ((100vw - 375px) / 1545))), 360px);
+}
+
+.MainContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: 180px;
+}
+
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldGroup h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #414343;
+  
+  text-transform: capitalize;
+}
+
+.fieldGroup input {
+  width: 100%;
+  border: 1px solid #4143434d;
+  padding: 19px 54px 19px 20px;
+  font-size: 15px;
+  
+  color: #414343;
+  font-weight: 400;
+  background-color: transparent;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.fieldGroup input::placeholder {
+  color: rgba(110, 115, 106, 0.6);
+  font-size: 15px;
+  
+}
+
+.earningHint {
+  font-size: 14px;
+  
+  font-weight: 400;
+  color: #818686;
+}
+
+
+.redemptionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.redemptionSection h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #414343;
+  
+}
+
+.checkBoxCard {
+  border: 1px solid #4143434d;
+  padding: 12px 12px 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.checkBoxCard input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #C4754E;
+  cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.checkBoxCard p {
+  font-size: 15px;
+  font-weight: 400;
+  color: #414343;
+  
+  margin: 0;
+}
+
+.checkBoxCard span {
+  font-size: 14px;
+  
+  color: #6e736a;
+  font-weight: 400;
+}
+
+.checkBoxCard div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mutedCard {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+
+.continueCta {
+  background-color: #C4754E;
+  color: #ffffff;
+  font-size: 15px;
+  
+  border: none;
+  padding: 13px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.continueMuted {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 84px;
+  width: 100%;
+}
+
+.totalBalance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalBalance h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #414343;
+  
+}
+
+.balanceRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.balanceNumber {
+  font-size: 18px;
+  font-weight: 500;
+  color: #414343;
+  
+}
+
+
+.breakdownSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.breakdownSection h6 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+  
+  text-transform: capitalize;
+}
+
+.breakdownCard {
+  background: #8186861a;
+  padding: 16px 21px 21px 16px;
+}
+
+.breakRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  
+  font-weight: 400;
+  color: #414343;
+  margin-bottom: 15px;
+}
+
+.line {
+  height: 1px;
+  background: #4143434d;
+  margin: 8px 0 15px 0;
+}
+
+.breakRowTotal {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  
+  font-size: 15px;
+  color: #414343;
+  margin-bottom: 15px;
+}
+
+.breakRowEarned {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  
+  font-weight: 400;
+  color: #414343;
+}
+
+.red {
+  color: #e54842;
+  
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.green {
+  color: #818686;
+  
+  font-weight: 400;
+  font-size: 15px;
+}
+
+
+@media (max-width: 375px) {
+  .Main {
+    padding: 0px 24px 30px 24px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left {
+    gap: 24px;
+  }
+
+  .fieldGroup h4,
+  .redemptionSection h4,
+  .totalBalance h4,
+  .breakdownSection h6 {
+    font-size: 16px;
+  }
+.right{
+    gap: 24px;
+}
+  .continueCta {
+    font-size: 14px;
+  }
+
+  .breakRow,
+  .breakRowTotal,
+  .breakRowEarned {
+    font-size: 14px;
+  }
+
+  .breakdownCard {
+    padding: 14px;
+  }
+
+  .balanceNumber {
+    font-size: 16px;
+  }
+}
+
+
+@media (min-width: 376px) and (max-width: 640px) {
+  .Main {
+    padding: 0px 24px 30px 24px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 32px;
+  }
+.right{
+    gap: 24px;
+}
+  .left {
+    gap: 24px;
+  }
+
+  .fieldGroup h4,
+  .redemptionSection h4,
+  .totalBalance h4,
+  .breakdownSection h6 {
+    font-size: 16px;
+  }
+
+  .continueCta {
+    font-size: 14px;
+  }
+
+  .breakRow,
+  .breakRowTotal,
+  .breakRowEarned {
+    font-size: 14px;
+  }
+
+  .breakdownCard {
+    padding: 14px;
+  }
+}
+
+
+@media (min-width: 641px) and (max-width: 1200px) {
+  .Main {
+    padding: 40px 50px 30px 50px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+
+
+@media (min-width: 1201px) and (max-width: 1440px) {
+  .Main {
+    padding: 40px 100px 30px 100px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 1441px) and (max-width: 1740px) {
+  .Main {
+    padding: 40px 100px 30px 100px;
+  }
+}
+.desktopContinue {
+  display: block;
+}
+
+.mobileContinue {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .desktopContinue {
+    display: none;
+  }
+
+  .mobileContinue {
+    display: block;
+    width: 100%;
+  }
+}

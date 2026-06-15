@@ -1,0 +1,195 @@
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100svh;
+    width: 100%;
+    background-color: #ffff;
+}
+.MainContainer{
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+    gap: 150px;
+    width: 100%;
+    align-items: center;
+
+}
+.LeftContainer{
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    max-width: 1200px;
+    background: url('./1.png');
+    padding-left: 125px;
+    padding-bottom: 125px;
+    padding-right: 50px;
+
+    flex-direction: column;
+    gap: 4px;
+    background-size: cover;
+    background-position: center;
+    height: 100svh;
+}
+.LeftContainer h5{
+    font-size: var(--fs-22);
+    color: #414343;
+    font-weight: 600;
+    margin: 0;
+
+    text-transform: capitalize;
+}
+.LeftContainer p{
+    font-size: 15px;
+    color: #FFFFFF;
+    font-weight: 400;
+
+    max-width: 370px;
+}
+.RightContainer{
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    max-width: 580px;
+    padding-right: 150px;
+   
+}
+.logoandtitle{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: left;
+}
+.logoandtitle img{
+    width: 100%;
+    height: 100%;
+    max-width: 39px;
+    max-height: 37px;
+
+}
+.logoandtitle h1{
+    font-size: var(--fs-22);
+    color: #414343;
+    font-weight: 600;
+
+    text-transform: capitalize;
+}
+.signincta{
+    background-color: #C4754E;
+    color: #FFFFFF;
+    font-weight: 400;
+    font-size: 16px;
+
+    border: none;
+    padding: 13px 13px;
+    width: 100%;
+    margin-top: 32px;
+    cursor: pointer;
+}
+.MangerIdContainer, .PasswordContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: left;
+}
+
+
+.MangerIdContainer{
+    margin-bottom: 32px;
+}
+.MangerIdContainer p, .PasswordContainer p{
+    font-size: 16px;
+    color: #818686;
+    font-weight: 600;
+
+    text-transform: capitalize;
+}
+
+.MangerIdContainer input,
+.PasswordContainer input {
+  width: 100%;
+  border: 1px solid #818686;
+  padding: 19px 54px 19px 20px;
+  font-size: 15px;
+
+  color: #818686; 
+  background-color: transparent;
+  outline: none;
+  box-sizing: border-box;
+}
+
+
+.MangerIdContainer input::placeholder,
+.PasswordContainer input::placeholder {
+  color: rgba(110, 115, 106, 0.6);
+  font-size: 16px;
+
+}
+
+
+.MangerIdContainer input:focus,
+.PasswordContainer input:focus {
+  border: 1px solid #818686;
+  color: #818686;
+}
+
+.errorMessage{
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 12px;
+}
+@media (max-width: 640px) {
+    .MainContainer{
+        flex-direction: column;
+        gap: 39px;
+        height: 100%;
+    }
+    .LeftContainer{
+        padding: 0px;
+        background-position: top;
+        width: 100%;
+        max-width: 100%;
+        height: 40svh;
+        justify-content: first baseline;
+    }
+    .LeftContainer h5, .LeftContainer p{
+        display: none;
+    }
+    .RightContainer{
+        padding: 0px 24px;
+    }
+    .logoandtitle img{
+        max-width: 44px;
+        max-height: 48px;
+    }
+     .logoandtitle h1{
+        font-size: 20px;
+    }
+    .MangerIdContainer, .PasswordContainer{
+        gap: 8px;
+    }
+     .MangerIdContainer p, .PasswordContainer p{
+        font-size: 14px;
+    }
+     .MangerIdContainer input, .PasswordContainer input {
+        padding: 11.5px 16px;
+        font-size: 14px;
+    }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+    .MainContainer{
+        flex-direction: column;
+        gap: 39px;
+        height: 100%;
+    }
+    .LeftContainer{
+        padding: 0px 20px 20px 80px;
+        width: 100%;
+        max-width: 100%;
+        height: 40svh;
+        justify-content: first baseline;
+    }
+ 
+}

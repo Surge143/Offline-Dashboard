@@ -1,0 +1,393 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #ffffff;
+  padding: clamp(32px, calc(32px + (32 * ((100vw - 375px) / 1545))), 64px)
+    clamp(24px, calc(24px + (336 * ((100vw - 375px) / 1545))), 360px)
+    clamp(32px, calc(32px + (91 * ((100vw - 375px) / 1545))), 123px)
+    clamp(24px, calc(24px + (336 * ((100vw - 375px) / 1545))), 360px);
+}
+
+.MainContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  width: 100%;
+  gap: 120px;
+}
+
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 41px;
+  width: 100%;
+}
+
+.leftTop {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+}
+
+.leftTopOne,
+.leftTopTwo,
+.leftTopThree {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leftTopOne h4,
+.leftTopTwo h4,
+.leftTopThree h4 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+  
+  text-transform: capitalize;
+}
+
+.leftTopOne p,
+.leftTopTwo p,
+.leftTopThree p {
+  font-size: 15px;
+  color: #818686;
+  font-weight: 400;
+  opacity: 0.6;
+  
+}
+
+.leftBottom {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+
+.summarySection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summarySection h3 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+  
+  text-transform: capitalize;
+}
+
+.summaryRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  
+  font-weight: 400;
+  color: #414343;
+}
+
+.red {
+  color: #e54842;
+  
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.green {
+  color: #818686;
+  
+  font-weight: 400;
+  font-size: 15px;
+}
+
+
+.Ctas {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.editcta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  border: 1px solid #C4754E;
+  color: #C4754E;
+  background-color: transparent;
+  font-size: 15px;
+  font-weight: 400;
+  
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.confrimcta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  background-color: #C4754E;
+  color: #ffffff;
+  border: none;
+  font-size: 15px;
+  font-weight: 400;
+  
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.confrimcta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.right h4 {
+  font-size: 18px;
+  color: #414343;
+  font-weight: 500;
+  
+  text-transform: capitalize;
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #8186861a;
+  padding: 16px 26px 16px 16px;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  
+  font-weight: 400;
+  color: #414343;
+}
+
+.divider {
+  height: 1px;
+  background: #4143434d;
+}
+
+.cardRowTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  
+  font-weight: 500;
+  color: #414343;
+}
+
+.mobileCtas {
+  display: none;
+}
+
+
+
+@media (min-width: 376px) and (max-width: 640px) {
+  .main {
+    padding: 0px 24px 30px 24px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left {
+    gap: 32px;
+  }
+
+  .leftTop {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .leftTopOne h4,
+  .leftTopTwo h4,
+  .leftTopThree h4,
+  .summarySection h3,
+  .right h4 {
+    font-size: 16px;
+  }
+
+  .leftTopOne p,
+  .leftTopTwo p,
+  .leftTopThree p {
+    font-size: 14px;
+  }
+
+  .summaryRow,
+  .cardRow,
+  .cardRowTotal {
+    font-size: 14px;
+  }
+
+  .red,
+  .green {
+    font-size: 14px;
+  }
+
+  .Ctas {
+    display: none;
+  }
+
+  .mobileCtas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .editcta,
+  .confrimcta {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .summaryCard {
+    padding: 14px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 375px) {
+  .main {
+    padding: 0px 24px 30px 24px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left {
+    gap: 32px;
+  }
+
+  .leftTop {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .leftTopOne h4,
+  .leftTopTwo h4,
+  .leftTopThree h4,
+  .summarySection h3,
+  .right h4 {
+    font-size: 16px;
+  }
+
+  .leftTopOne p,
+  .leftTopTwo p,
+  .leftTopThree p {
+    font-size: 14px;
+  }
+
+  .summaryRow,
+  .cardRow,
+  .cardRowTotal {
+    font-size: 14px;
+  }
+
+  .red,
+  .green {
+    font-size: 14px;
+  }
+
+  .Ctas {
+    display: none;
+  }
+
+  .mobileCtas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .editcta,
+  .confrimcta {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .summaryCard {
+    padding: 14px;
+    gap: 12px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1200px) {
+  .main {
+    padding: 40px 50px 30px 50px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .Ctas {
+    display: none;
+  }
+
+  .mobileCtas {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    margin-top: 16px;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1440px) {
+  .main {
+    padding: 40px 100px 30px 100px;
+  }
+
+  .MainContainer {
+    flex-direction: column;
+  }
+
+  .Ctas {
+    display: none;
+  }
+
+  .mobileCtas {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    margin-top: 16px;
+  }
+}
+
+@media (min-width: 1441px) and (max-width: 1740px) {
+  .main {
+    padding: 40px 100px 30px 100px;
+  }
+}

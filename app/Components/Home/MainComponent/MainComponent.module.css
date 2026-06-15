@@ -1,0 +1,144 @@
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffffff;
+    padding-top: 91px;
+}
+.MainContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+   gap: clamp(32px, calc(32px + (28 * ((100vw - 320px) / 1120))), 60px);
+    width: 100%;
+    align-items: center;
+}
+.topContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  padding:
+clamp(17px, calc(17px + (0.5 * ((100vw - 320px) / 1120))), 17.5px)
+clamp(62px, calc(62px + (66 * ((100vw - 320px) / 1120))), 128px);
+    border: 1px solid #818686;
+  cursor: pointer;
+   
+}
+.topContainer p{
+    font-size: var(--fs-22);
+    color: #818686;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.bottomContainer{
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    gap: 16px;
+}
+.bottomContainer h3{
+    font-size: 16px;
+    color: #414343;
+    font-weight: 600;
+}
+.bottombottom{
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+    gap: 48.77px;
+}
+.bottombottomLeft, .bottombottomRight{
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    gap: 16px;
+}
+.cafeRules, .StoreRules{
+    display: flex;
+    justify-content: left;
+}
+.cafeRules p, .StoreRules p{
+    font-size: 16px;
+    color: #818686;
+    font-weight: 400;
+
+}
+.cafeRulespoints,
+.StoreRulespoints {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding-left: 0;
+    margin: 0;
+}
+.MainContainer a{
+    text-decoration: none;
+    color: inherit;
+}
+.cafeRulespoints li,
+.StoreRulespoints li {
+    font-size: 16px;
+    color: #818686;
+    font-weight: 400;
+
+}
+@media (max-width: 640px) {
+    .main{
+        padding: 24px 24px;
+
+    }
+    .MainContainer{
+        gap: 32px;
+        justify-content: left;
+        flex-direction: column;
+    }
+    .topContainer{
+        padding: 24px 62px;
+        width: 100%;
+    }
+    .topContainer p{
+        font-size: 16px;
+    }
+    .bottombottom{
+        flex-direction: column;
+        justify-content: left;
+        gap: 24px;
+    }
+    .bottomContainer{
+        justify-content: left ;
+        width: 100%;
+    }
+    .bottomContainer h3{
+        font-size: 16px;
+    }
+    .bottombottomLeft, .bottombottomRight{
+        gap: 8px;
+    }
+    .cafeRules p , .StoreRules p{
+        font-size: 14px;
+    }
+   .cafeRulespoints,
+    .StoreRulespoints {
+        padding-left: 4px;   
+        margin: 0;
+        list-style-position: inside;  
+    }
+
+    .cafeRulespoints li,
+    .StoreRulespoints li {
+        font-size: 14px;
+        color: #6E736A;
+        padding-left: 4px;  
+    }
+
+    .cafeRulespoints li::marker,
+    .StoreRulespoints li::marker {
+        color: #6E736A;
+        margin-right: 2px !important;
+    }
+
+}

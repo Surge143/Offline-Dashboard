@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --montserrat: 'Montserrat', sans-serif;
+
+  --nav-color: #fff9ef;
+  --nav-gap: 36px;
+  --fs-120: clamp(4rem, 3.54vi + 3.25rem, 7.5rem);
+  --fs-15: clamp(0.88rem, 0.06vi + 0.86rem, 0.94rem);
+  --fs-22: clamp(1.25rem, 0.13vi + 1.22rem, 1.38rem);
+  --fs-60: clamp(2rem, 1.77vi + 1.62rem, 3.75rem);
+  --fs-48: clamp(1.75rem, 1.27vi + 1.48rem, 3rem);
+  --fs-28: clamp(1.13rem, 0.63vi + 0.99rem, 1.75rem);
+  --fs-18: clamp(0.88rem, 0.25vi + 0.82rem, 1.13rem);
+  --fs-24: clamp(1.13rem, 0.38vi + 1.04rem, 1.5rem);
+  --fs-20: clamp(0.88rem, 0.38vi + 0.79rem, 1.25rem);
+  --fs-60: clamp(1.75rem, 2.03vi + 1.32rem, 3.75rem);
+  --fs-120: clamp(2.25rem, 5.32vi + 1.12rem, 7.5rem);
+  --sectionPadding: clamp(
+    70px,
+    calc(70px + (80 * ((100vw - 320px) / 1120))),
+    150px
+  );
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+
+  font-family: var(--montserrat);
+  
+
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--montserrat);
+}
+
+p,
+span,
+li,
+a {
+  font-family: var(--montserrat);
+}
+
+.TopPaddingForMobile {
+  padding-top: 0px;
+}
+@media (max-width: 640px) {
+  .TopPaddingForMobile {
+    padding-top: 108px;
+  }
+}
+
+.sectionPadding {
+  height: var(--sectionPadding);
+}
