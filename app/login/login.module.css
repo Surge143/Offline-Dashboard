@@ -67,6 +67,7 @@
     height: 100%;
     max-width: 39px;
     max-height: 37px;
+    object-fit: contain;
 
 }
 .logoandtitle h1{

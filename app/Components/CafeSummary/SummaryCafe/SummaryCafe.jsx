@@ -1,10 +1,11 @@
   "use client";
 
-  import React, { useEffect, useState } from "react";
+  import React, { useEffect, useRef, useState } from "react";
   import { useSearchParams, useRouter } from "next/navigation";
   import styles from "./SummaryCafe.module.css";
   import Image from "next/image";
   import stampicon from "./cstamp.png";
+  import { previewBeansRedeemed } from "../../../lib/rewards";
 
 
   const SummaryCafe = () => {
@@ -65,12 +66,183 @@ const rewardAdded = Math.floor((stampsBefore + stampsEarned) / TOTAL_STAMPS);
 const rewardsAfter = type === 'redeem'
   ? rewardsBefore - (reward ? 1 : 0)         
   : rewardsBefore + rewardAdded;            
+const beansConsumed = type === 'redeem' && beans ? previewBeansRedeemed(beansBefore, value) : 0;
 const beansAfter = type === 'redeem'
-  ? (beans ? 0 : beansBefore)             
-  : beansBefore;         
+  ? Math.max(0, beansBefore - beansConsumed)
+  : beansBefore;
 const stampsAfter = type === 'redeem'
   ? stampsBefore                 
   : (stampsBefore + stampsEarned) % TOTAL_STAMPS;
+
+
+    // Guards against a double tap sending the same request twice before the button re-renders as disabled.
+    const submittingRef = useRef(false);
+
+    const handleEdit = () => {
+      try { sessionStorage.setItem('cafe_edit_order', 'true'); } catch {}
+      router.back();
+    };
+
+    const handleConfirm = async () => {
+      if (submittingRef.current) return;
+      submittingRef.current = true;
+      try {
+                        setLoading(true);
+                        try {
+                   
+                          let stored = null;
+                          try {
+                            const raw = sessionStorage.getItem('cafe_summary_response');
+                            if (raw) stored = JSON.parse(raw);
+                          } catch {}
+
+
+                          if (stored?.response?.success) {
+                            setLoading(false);
+                            router.replace('/OrderComplete');
+                            return;
+                          }
+
+  if (type === 'redeem') {
+    let scannedUserId = null;
+    try {
+      const rawUser = sessionStorage.getItem('scanned_user');
+      if (rawUser) {
+        const parsedUser = JSON.parse(rawUser);
+        scannedUserId = parsedUser?.id || parsedUser?.user || null;
+      }
+    } catch {}
+
+    if (!scannedUserId) {
+      setLoading(false);
+      alert('No scanned customer found. Please go back and scan a customer QR code first.');
+      return;
+    }
+
+    let redeemBody = null;
+    try {
+      const rawRedeem = sessionStorage.getItem('cafe_redeem_request');
+      if (rawRedeem) redeemBody = JSON.parse(rawRedeem);
+    } catch {}
+
+    if (!redeemBody || !redeemBody.referenceId) {
+      setLoading(false);
+      alert('Missing redeem details. Please go back and fill in the details.');
+      return;
+    }
+
+
+    try { console.log('[SummaryCafe] sending redeem request', { userId: scannedUserId, ...redeemBody }); } catch {}
+    const resp = await fetch('/api/cafe/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ userId: scannedUserId, ...redeemBody }),
+    });
+
+    let result = null;
+    try { result = await resp.json(); } catch {}
+
+    if (resp.ok && result?.success) {
+      try { sessionStorage.removeItem('cafe_redeem_request'); } catch {}
+     
+        try {
+          const rawUser = sessionStorage.getItem('scanned_user');
+          if (rawUser) {
+            const parsedUser = JSON.parse(rawUser);
+
+            const beansFinal = result?.data?.summary?.beans?.final;
+            const rewardsFinal = result?.data?.summary?.stampRewards?.final;
+            if (typeof beansFinal !== 'undefined' && beansFinal !== null) {
+              parsedUser.beans = Number(beansFinal) || 0;
+   
+              parsedUser.whiteMantisBeans = Number(beansFinal) || parsedUser.whiteMantisBeans || 0;
+            }
+            if (typeof rewardsFinal !== 'undefined' && rewardsFinal !== null) {
+              parsedUser.totalRewards = Number(rewardsFinal) || parsedUser.totalRewards || 0;
+              parsedUser.stampReward = Number(rewardsFinal) || parsedUser.stampReward || 0;
+            }
+            try { sessionStorage.setItem('scanned_user', JSON.stringify(parsedUser)); } catch {}
+          }
+        } catch (e) {
+          console.warn('[SummaryCafe] failed to update scanned_user after redeem', e);
+        }
+
+        setLoading(false);
+        router.replace('/OrderComplete');
+        return;
+    }
+
+    setLoading(false);
+    alert(result?.message || 'Redemption failed. Please try again.');
+    return;
+  }
+                      
+                          let scannedUserId = null;
+                          try {
+                            const rawUser = sessionStorage.getItem('scanned_user');
+                            if (rawUser) {
+                              const parsedUser = JSON.parse(rawUser);
+                              scannedUserId = parsedUser?.id || parsedUser?.user || null;
+                            }
+                          } catch {}
+
+                          if (!scannedUserId) {
+                            setLoading(false);
+                            alert('No scanned customer found. Please go back and scan a customer QR code first.');
+                            return;
+                          }
+
+                          const requestBody = stored?.request || {
+                            referenceId: refParam || '',
+                            stampsEarned: stampsEarned || 0,
+                          };
+
+                          if (!requestBody.referenceId || requestBody.stampsEarned <= 0) {
+                            setLoading(false);
+                            alert('Missing reference ID or stamp count. Please go back and fill in the details.');
+                            return;
+                          }
+
+                          const resp = await fetch('/api/cafe/earn-by-user', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'same-origin', 
+                            body: JSON.stringify({
+                              userId: scannedUserId,
+                              stampsEarned: requestBody.stampsEarned,
+                              referenceId: requestBody.referenceId,
+                            }),
+                          });
+
+                          let result = null;
+                          try { result = await resp.json(); } catch {}
+
+                          if (resp.ok && result?.success) {
+                            try {
+                              sessionStorage.setItem('cafe_summary_response',
+                                JSON.stringify({ request: requestBody, response: result }));
+                            } catch {}
+                            setLoading(false);
+                            router.replace('/OrderComplete');
+                            return;
+                          }
+
+                          setLoading(false);
+                          alert(result?.message || 'Unable to issue stamps. Please try again.');
+                        } catch (err) {
+                          setLoading(false);
+                          console.error('Confirm finalize failed', err);
+                          alert('Failed to finalize order. Check console for details.');
+                        }
+      } finally {
+        submittingRef.current = false;
+      }
+    };
+
+    const confirmLabel = loading
+      ? (type === 'redeem' ? 'Redeeming...' : 'Issuing...')
+      : (type === 'redeem' ? 'Confirm & Redeem' : 'Confirm & issue rewards');
 
     return (
       <>
@@ -123,7 +295,7 @@ const stampsAfter = type === 'redeem'
                       {beans && (
                         <div className={styles.redCard}>
                           <div className={styles.redLeft}>
-                    <h4>-{beansBefore}</h4>
+                    <h4>-{beansConsumed}</h4>
 <p>Surge beans</p>
                           </div>
 
@@ -175,166 +347,14 @@ const stampsAfter = type === 'redeem'
                 )}
 
                 <div className={styles.Ctas}>
-<button onClick={() => {
-  try { sessionStorage.setItem('cafe_edit_order', 'true'); } catch {}
-  router.back();
-}} className={styles.editcta}>Edit Order</button>
+<button onClick={handleEdit} className={styles.editcta}>Edit Order</button>
                   <button
                     className={styles.confrimcta}
                     disabled={loading}
                     aria-disabled={loading}
-                    onClick={async () => {
-                      setLoading(true);
-                      try {
-                 
-                        let stored = null;
-                        try {
-                          const raw = sessionStorage.getItem('cafe_summary_response');
-                          if (raw) stored = JSON.parse(raw);
-                        } catch {}
-
-
-                        if (stored?.response?.success) {
-                          setLoading(false);
-                          router.replace('/OrderComplete');
-                          return;
-                        }
-
-if (type === 'redeem') {
-  let scannedUserId = null;
-  try {
-    const rawUser = sessionStorage.getItem('scanned_user');
-    if (rawUser) {
-      const parsedUser = JSON.parse(rawUser);
-      scannedUserId = parsedUser?.id || parsedUser?.user || null;
-    }
-  } catch {}
-
-  if (!scannedUserId) {
-    setLoading(false);
-    alert('No scanned customer found. Please go back and scan a customer QR code first.');
-    return;
-  }
-
-  let redeemBody = null;
-  try {
-    const rawRedeem = sessionStorage.getItem('cafe_redeem_request');
-    if (rawRedeem) redeemBody = JSON.parse(rawRedeem);
-  } catch {}
-
-  if (!redeemBody || !redeemBody.referenceId) {
-    setLoading(false);
-    alert('Missing redeem details. Please go back and fill in the details.');
-    return;
-  }
-
-
-  try { console.log('[SummaryCafe] sending redeem request', { userId: scannedUserId, ...redeemBody }); } catch {}
-  const resp = await fetch('/api/cafe/redeem', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'same-origin',
-    body: JSON.stringify({ userId: scannedUserId, ...redeemBody }),
-  });
-
-  let result = null;
-  try { result = await resp.json(); } catch {}
-
-  if (resp.ok && result?.success) {
-    try { sessionStorage.removeItem('cafe_redeem_request'); } catch {}
-   
-      try {
-        const rawUser = sessionStorage.getItem('scanned_user');
-        if (rawUser) {
-          const parsedUser = JSON.parse(rawUser);
-
-          const beansFinal = result?.data?.summary?.beans?.final;
-          const rewardsFinal = result?.data?.summary?.stampRewards?.final;
-          if (typeof beansFinal !== 'undefined' && beansFinal !== null) {
-            parsedUser.beans = Number(beansFinal) || 0;
- 
-            parsedUser.whiteMantisBeans = Number(beansFinal) || parsedUser.whiteMantisBeans || 0;
-          }
-          if (typeof rewardsFinal !== 'undefined' && rewardsFinal !== null) {
-            parsedUser.totalRewards = Number(rewardsFinal) || parsedUser.totalRewards || 0;
-            parsedUser.stampReward = Number(rewardsFinal) || parsedUser.stampReward || 0;
-          }
-          try { sessionStorage.setItem('scanned_user', JSON.stringify(parsedUser)); } catch {}
-        }
-      } catch (e) {
-        console.warn('[SummaryCafe] failed to update scanned_user after redeem', e);
-      }
-
-      setLoading(false);
-      router.replace('/OrderComplete');
-      return;
-  }
-
-  setLoading(false);
-  alert(result?.message || 'Redemption failed. Please try again.');
-  return;
-}
-                    
-                        let scannedUserId = null;
-                        try {
-                          const rawUser = sessionStorage.getItem('scanned_user');
-                          if (rawUser) {
-                            const parsedUser = JSON.parse(rawUser);
-                            scannedUserId = parsedUser?.id || parsedUser?.user || null;
-                          }
-                        } catch {}
-
-                        if (!scannedUserId) {
-                          setLoading(false);
-                          alert('No scanned customer found. Please go back and scan a customer QR code first.');
-                          return;
-                        }
-
-                        const requestBody = stored?.request || {
-                          referenceId: refParam || '',
-                          stampsEarned: stampsEarned || 0,
-                        };
-
-                        if (!requestBody.referenceId || requestBody.stampsEarned <= 0) {
-                          setLoading(false);
-                          alert('Missing reference ID or stamp count. Please go back and fill in the details.');
-                          return;
-                        }
-
-                        const resp = await fetch('/api/cafe/earn-by-user', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          credentials: 'same-origin', 
-                          body: JSON.stringify({
-                            userId: scannedUserId,
-                            stampsEarned: requestBody.stampsEarned,
-                            referenceId: requestBody.referenceId,
-                          }),
-                        });
-
-                        let result = null;
-                        try { result = await resp.json(); } catch {}
-
-                        if (resp.ok && result?.success) {
-                          try {
-                            sessionStorage.setItem('cafe_summary_response',
-                              JSON.stringify({ request: requestBody, response: result }));
-                          } catch {}
-                          setLoading(false);
-                          router.replace('/OrderComplete');
-                          return;
-                        }
-
-                        setLoading(false);
-                        alert(result?.message || 'Unable to issue stamps. Please try again.');
-                      } catch (err) {
-                        setLoading(false);
-                        console.error('Confirm finalize failed', err);
-                        alert('Failed to finalize order. Check console for details.');
-                      }
-                    }}
+                    onClick={handleConfirm}
                   >
- {loading ? (type === 'redeem' ? 'Redeeming...' : 'Issuing...') : (type === 'redeem' ? 'Confirm & Redeem' : 'Confirm & issue rewards')}
+ {confirmLabel}
 
                   </button>
                 </div>
@@ -382,9 +402,14 @@ if (type === 'redeem') {
                 </div>
               </div>
               <div className={styles.mobileCtas}>
-                <button className={styles.editcta}>Edit Order</button>
-                <button className={styles.confrimcta}>
-                  Confirm & issue rewards
+                <button className={styles.editcta} onClick={handleEdit}>Edit Order</button>
+                <button
+                  className={styles.confrimcta}
+                  disabled={loading}
+                  aria-disabled={loading}
+                  onClick={handleConfirm}
+                >
+                  {confirmLabel}
                 </button>
               </div>
             </div>

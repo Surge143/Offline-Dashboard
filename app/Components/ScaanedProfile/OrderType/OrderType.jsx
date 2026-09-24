@@ -93,7 +93,7 @@ React.useEffect(() => {
           </div>
           <div className={styles.Right}>
             <div className={styles.RightTop}>
-              <h6>White mantis beans</h6>
+              <h6>Surge beans</h6>
               <div className={styles.BeansCard}>
                 <div className={styles.some}>
 <p>{beans}</p>

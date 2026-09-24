@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./ShopSummaryMain.module.css";
+import { previewBeansRedeemed, previewBeansEarned } from "../../../lib/rewards";
 
 const ShopSummaryMain = () => {
   const params = useSearchParams();
@@ -41,12 +42,17 @@ useEffect(() => {
     0
   ) || 0;
 
-  const beansRedeemed = redeemBeans ? beansBefore : 0;
+  // Same rules as the backend: only as many beans as the order is worth are used,
+  // and beans are earned on the part of the order not paid with beans.
+  const beansRedeemed = redeemBeans ? previewBeansRedeemed(beansBefore, orderVal) : 0;
 
-  const beansEarned = Math.floor(orderVal * 0.1);
+  const beansEarned = previewBeansEarned(orderVal, beansRedeemed);
   const beansAfter = beansBefore - beansRedeemed + beansEarned;
 
-  const handleConfirm = async () => {
+  // Guards against a double tap sending the same request twice before the button re-renders as disabled.
+  const submittingRef = useRef(false);
+
+  const doConfirm = async () => {
     setLoading(true);
     try {
       let scannedUserId = null;
@@ -107,6 +113,16 @@ useEffect(() => {
     } catch {
       setLoading(false);
       alert("Failed to finalize order. Check console for details.");
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    try {
+      await doConfirm();
+    } finally {
+      submittingRef.current = false;
     }
   };
 

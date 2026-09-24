@@ -73,10 +73,15 @@ export async function GET(request) {
         const hasTotalsBody = data && data.body && (data.body.totalBeans !== undefined || data.body.totalStamps !== undefined || data.body.stampReward !== undefined);
         if (hasTotalsTop || hasTotalsBody) {
           const src = hasTotalsBody ? data.body : data;
+          // The barcode endpoint also returns the customer record — use it so the
+          // scanned customer keeps their id/name (rewards are issued by id).
+          const totalsUser = src.user && typeof src.user === "object" ? src.user : null;
+          let totalsAvatar = totalsUser?.profileImage?.url || null;
+          if (typeof totalsAvatar === "string" && totalsAvatar.startsWith("/")) totalsAvatar = "https://endpoint.surgecoffee.ae" + totalsAvatar;
           const normalizedTotals = {
-            id: null,
-            name: null,
-            avatar: null,
+            id: totalsUser?.id ?? null,
+            name: totalsUser ? (`${totalsUser.firstName || ""} ${totalsUser.lastName || ""}`.trim() || totalsUser.email || null) : null,
+            avatar: totalsAvatar,
             beans: Number(src.totalBeans) || 0,
             activeStamps: Number(src.totalStamps) || 0,
             totalRewards: Number(src.stampReward || 0) || 0,
@@ -217,6 +222,30 @@ const stampCandidates = [
               }
             } catch (e) {
               console.debug('[api/scan] stamps fetch error', e);
+            }
+
+            // The REST reads above are filtered by the backend's access rules — a
+            // shop manager can only read their OWN coin record, so a customer's bean
+            // balance can come back as 0. The barcode endpoint reads the real totals
+            // server-side, so prefer it whenever we have the customer's barcode token.
+            // If it isn't available the REST-derived values above are kept unchanged.
+            try {
+              const customerBarcodeToken = found.barcodeToken;
+              if (customerBarcodeToken) {
+                const tResp = await fetch(`${EXTERNAL_BARCODE}/${encodeURIComponent(customerBarcodeToken)}`, { method: 'GET', headers });
+                console.log('[api/scan] barcode totals status=', tResp.status);
+                if (tResp.ok) {
+                  const tData = await tResp.json().catch(() => null);
+                  if (tData && tData.success) {
+                    if (tData.totalBeans !== undefined) found.beans = Number(tData.totalBeans) || 0;
+                    if (tData.totalStamps !== undefined) found.activeStamps = Number(tData.totalStamps) || 0;
+                    if (tData.stampReward !== undefined) found.totalRewards = Number(tData.stampReward) || 0;
+                    console.log('[api/scan] totals from barcode endpoint: beans=', found.beans, 'stamps=', found.activeStamps, 'rewards=', found.totalRewards);
+                  }
+                }
+              }
+            } catch (e) {
+              console.debug('[api/scan] barcode totals error', e);
             }
 
             async function resolveAvatar(u) {

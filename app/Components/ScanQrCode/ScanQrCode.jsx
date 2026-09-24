@@ -11,6 +11,9 @@ const ScanQrCode = () => {
   const router = useRouter();
 
   function handleScan(code) {
+    // Drop the previous customer first: if this lookup fails, rewards must never be
+    // issued to whoever was scanned before.
+    try { sessionStorage.removeItem("scanned_user"); } catch {}
     try {
       if (typeof window !== "undefined" && code) {
         const cleaned = String(code).trim();

@@ -1,18 +1,37 @@
 import { NextResponse } from 'next/server'
 
+const STAMPS_PER_REWARD = 10;
+
 export async function POST(req) {
   try {
     const body = await req.json();
     const { userId, stampsEarned, referenceId } = body || {};
 
-    if (!userId || typeof stampsEarned === 'undefined' || !referenceId || !String(referenceId).trim()) {
+    const stampsNum = Number(stampsEarned);
+    const numericUserId = Number(userId);
+    const refId = String(referenceId ?? '').trim();
+
+    if (!userId || !refId || typeof stampsEarned === 'undefined') {
       return NextResponse.json(
         { success: false, message: 'userId, stampsEarned and referenceId are required' },
         { status: 400 }
       );
     }
 
-   
+    if (!Number.isInteger(stampsNum) || stampsNum <= 0) {
+      return NextResponse.json(
+        { success: false, message: 'stampsEarned must be a whole number greater than 0' },
+        { status: 400 }
+      );
+    }
+
+    if (!Number.isInteger(numericUserId) || numericUserId <= 0) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid customer. Please scan the QR code again.' },
+        { status: 400 }
+      );
+    }
+
     const incomingCookie = req.headers.get('cookie') || '';
     let jwt = '';
     const match = incomingCookie.match(/(?:^|; )payload_token=([^;]+)/);
@@ -30,10 +49,10 @@ export async function POST(req) {
     const base = process.env.NEXT_PUBLIC_SERVER_URL || process.env.OFFLINE_BASE_URL || 'https://endpoint.surgecoffee.ae';
     const authHeader = { 'Authorization': `JWT ${jwt}`, 'Content-Type': 'application/json' };
 
-  
+    // Preferred path: the backend's barcode endpoint (looked up via the customer's barcodeToken).
     let barcodeToken = null;
     try {
-      const userResp = await fetch(`${base}/api/users/${encodeURIComponent(userId)}`, {
+      const userResp = await fetch(`${base}/api/users/${encodeURIComponent(numericUserId)}`, {
         method: 'GET',
         headers: authHeader,
       });
@@ -53,7 +72,6 @@ export async function POST(req) {
       console.warn('[earn-by-user] user lookup failed', e);
     }
 
-   
     if (barcodeToken) {
       try {
         const earnResp = await fetch(
@@ -61,7 +79,7 @@ export async function POST(req) {
           {
             method: 'POST',
             headers: authHeader,
-            body: JSON.stringify({ stampsEarned, referenceId }),
+            body: JSON.stringify({ stampsEarned: stampsNum, referenceId: refId }),
           }
         );
         const earnData = await earnResp.json().catch(() => null);
@@ -74,26 +92,26 @@ export async function POST(req) {
       }
     }
 
-
- const earningHistoryItem = {
-  type: 'offline',
-  stamps: stampsEarned,
-  earnedAt: new Date().toISOString(),
-  offlineReferenceId: String(referenceId).trim(),
-};
-
-    let stampCount = stampsEarned;
-    let stampReward = 0;
+    // Fallback: apply the stamps directly on the customer's Surge stamp record.
+    // (Shop managers are allowed to create/update `surge-stamps`.) Nothing has
+    // been written at this point — the barcode endpoint validates before it saves.
+    const earningHistoryItem = {
+      type: 'offline',
+      stamps: stampsNum,
+      earnedAt: new Date().toISOString(),
+      offlineReferenceId: refId,
+    };
 
     const findResp = await fetch(
-      `${base}/api/wt-stamps?where[user][equals]=${encodeURIComponent(Number(userId))}&limit=1`,
+      `${base}/api/surge-stamps?where[user][equals]=${encodeURIComponent(numericUserId)}&limit=1&depth=0`,
       { method: 'GET', headers: authHeader }
     );
 
     if (!findResp.ok) {
+      console.error('[earn-by-user] surge-stamps lookup failed', findResp.status);
       return NextResponse.json(
         { success: false, message: 'Failed to look up stamp record' },
-        { status: 500 }
+        { status: findResp.status === 401 || findResp.status === 403 ? findResp.status : 500 }
       );
     }
 
@@ -101,21 +119,29 @@ export async function POST(req) {
     const existing = findData?.docs?.[0] || null;
 
     if (existing) {
-      const totalStamps = (existing.stampCount || 0) + stampsEarned;
-      const earnedRewards = Math.floor(totalStamps / 10);
-      stampCount = totalStamps % 10;
-      stampReward = (existing.stampReward || 0) + earnedRewards;
+      // Retry-safe: the same reference ID must never add stamps twice.
+      const alreadyIssued = (existing.stampEarningHistory || []).some(
+        (h) => h?.offlineReferenceId === refId
+      );
+      if (alreadyIssued) {
+        return NextResponse.json({
+          success: true,
+          message: 'Stamps were already issued for this reference (no change made)',
+          data: { stampCount: existing.stampCount || 0, stampReward: existing.stampReward || 0 },
+        });
+      }
 
-      const updateResp = await fetch(`${base}/api/wt-stamps/${existing.id}`, {
+      const totalStamps = (existing.stampCount || 0) + stampsNum;
+      const stampCount = totalStamps % STAMPS_PER_REWARD;
+      const stampReward = (existing.stampReward || 0) + Math.floor(totalStamps / STAMPS_PER_REWARD);
+
+      const updateResp = await fetch(`${base}/api/surge-stamps/${existing.id}`, {
         method: 'PATCH',
         headers: authHeader,
         body: JSON.stringify({
           stampCount,
           stampReward,
-          stampEarningHistory: [
-            ...(existing.stampEarningHistory || []),
-            earningHistoryItem,
-          ],
+          stampEarningHistory: [...(existing.stampEarningHistory || []), earningHistoryItem],
         }),
       });
 
@@ -128,42 +154,42 @@ export async function POST(req) {
       }
 
       const updateErr = await updateResp.json().catch(() => null);
+      console.error('[earn-by-user] surge-stamps update failed', updateResp.status, updateErr);
       return NextResponse.json(
-        { success: false, message: updateErr?.message || 'Failed to update stamps' },
+        { success: false, message: updateErr?.message || updateErr?.errors?.[0]?.message || 'Failed to update stamps' },
         { status: updateResp.status }
       );
-
-    } else {
-
-      const earnedRewards = Math.floor(stampsEarned / 10);
-      stampCount = stampsEarned % 10;
-      stampReward = earnedRewards;
-
-      const createResp = await fetch(`${base}/api/wt-stamps`, {
-        method: 'POST',
-        headers: authHeader,
-        body: JSON.stringify({
-          user: Number(userId),
-          stampCount,
-          stampReward,
-          stampEarningHistory: [earningHistoryItem],
-        }),
-      });
-
-      if (createResp.ok) {
-        return NextResponse.json({
-          success: true,
-          message: 'Stamps created successfully',
-          data: { stampCount, stampReward },
-        });
-      }
-
-      const createErr = await createResp.json().catch(() => null);
-      return NextResponse.json(
-        { success: false, message: createErr?.message || 'Failed to create stamps' },
-        { status: createResp.status }
-      );
     }
+
+    // First stamps for this customer — create their stamp record.
+    const stampCount = stampsNum % STAMPS_PER_REWARD;
+    const stampReward = Math.floor(stampsNum / STAMPS_PER_REWARD);
+
+    const createResp = await fetch(`${base}/api/surge-stamps`, {
+      method: 'POST',
+      headers: authHeader,
+      body: JSON.stringify({
+        user: numericUserId,
+        stampCount,
+        stampReward,
+        stampEarningHistory: [earningHistoryItem],
+      }),
+    });
+
+    if (createResp.ok) {
+      return NextResponse.json({
+        success: true,
+        message: 'Stamps created successfully',
+        data: { stampCount, stampReward },
+      });
+    }
+
+    const createErr = await createResp.json().catch(() => null);
+    console.error('[earn-by-user] surge-stamps create failed', createResp.status, createErr);
+    return NextResponse.json(
+      { success: false, message: createErr?.message || createErr?.errors?.[0]?.message || 'Failed to create stamps' },
+      { status: createResp.status }
+    );
 
   } catch (err) {
     console.error('[earn-by-user] error', err);

@@ -5,6 +5,7 @@ import activestamp from "./cstamp.png";
 import inactivestamp from "./nostamp.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { previewBeansRedeemed, beansToAed } from "../../../lib/rewards";
 
 const CafePointsMain = () => {
   const router = useRouter();
@@ -92,7 +93,8 @@ const CafePointsMain = () => {
       ? String(referenceId).trim().length > 0 && stampsNumberForCheck > 0
       : String(referenceId).trim().length > 0 && orderValueNumber > 0;
 
-  const beansValueAED = Number(userBeans) / 10;
+  // Only as many beans as the order is worth are used (never a negative total).
+  const beansValueAED = beansToAed(previewBeansRedeemed(userBeans, orderValueNumber));
   const stampRewardAED = 0;
 
   useEffect(() => {
@@ -291,7 +293,7 @@ const CafePointsMain = () => {
                         onChange={(e) => setUseBeans(e.target.checked)}
                       />
                       <div>
-                        <p>Redeem white mantis beans</p>
+                        <p>Redeem Surge beans</p>
                         <span>No stamp when beans used as payment</span>
                       </div>
                     </div>

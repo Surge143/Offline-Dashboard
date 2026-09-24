@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./ShopMain.module.css";
 import { useRouter } from "next/navigation";
+import { previewBeansRedeemed, previewBeansEarned, beansToAed } from "../../../lib/rewards";
 
 const ShopMain = () => {
   const router = useRouter();
@@ -13,9 +14,12 @@ const ShopMain = () => {
 
   const orderValueNumber =
     parseFloat(String(orderValue).replace(/,/g, "")) || 0;
-  const beansValueAED = Number(userBeans) / 10;
-  const beansEarned = Math.floor(orderValueNumber * 0.1);
-  const total = orderValueNumber - (useBeans ? beansValueAED : 0);
+  // Same rules as the backend: only as many beans as the order is worth are used,
+  // and beans are earned on the part of the order not paid with beans.
+  const beansRedeemedPreview = useBeans ? previewBeansRedeemed(userBeans, orderValueNumber) : 0;
+  const beansValueAED = beansToAed(beansRedeemedPreview);
+  const beansEarned = previewBeansEarned(orderValueNumber, beansRedeemedPreview);
+  const total = orderValueNumber - beansValueAED;
 
   const canContinue =
     String(referenceId).trim().length > 0 && orderValueNumber > 0;
@@ -108,7 +112,7 @@ const ShopMain = () => {
             <h4>Reference Id</h4>
             <input
               type="text"
-              placeholder="eg. WM00034"
+              placeholder="Enter reference ID"
               value={referenceId}
               onChange={(e) => setReferenceId(e.target.value)}
             />
@@ -125,8 +129,7 @@ const ShopMain = () => {
             />
             {orderValueNumber > 0 && (
               <p className={styles.earningHint}>
-                You are earning {beansEarned} white mantis beans on this cart
-                value.
+                You are earning {beansEarned} Surge beans on this order.
               </p>
             )}
           </div>
@@ -146,7 +149,7 @@ const ShopMain = () => {
                 onChange={(e) => setUseBeans(e.target.checked)}
               />
               <div>
-                <p>Redeem white mantis beans</p>
+                <p>Redeem Surge beans</p>
                 <span>No stamp when beans used as payment</span>
               </div>
             </div>
